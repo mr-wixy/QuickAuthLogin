@@ -6,6 +6,21 @@ if (!defined('__TYPECHO_ROOT_DIR__')) {
 
 class QuickAuthLogin_Action extends Typecho_Widget
 {
+    
+    /* 测试插件安装接口 */
+    public function ping(){ 
+        $version = Typecho_Cookie::get('__typecho_check_version');
+        $data = [
+            "code" => 0,
+            "msg" => "pong",
+            "data" => [
+                "name" => "QuickAuthLogin For Typecho",
+        	    "version" => QuickAuthLogin_Plugin::PLUGIN_VERSION
+                ]
+        ];
+        $res = new Typecho_Response();
+        $res->throwJson($data);
+    }
 
     /* 重置当前用户绑定数据 */
     public function reset()

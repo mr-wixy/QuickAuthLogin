@@ -4,13 +4,14 @@
  * 
  * @package QuickAuthLogin 
  * @author wixy
- * @version 0.9.1
- * @link https://blog.wixy.cn/archives/quickauthlogin.html
+ * @version 0.9.2
+ * @link https://blog.wixy.cn
  */
 
 class QuickAuthLogin_Plugin implements Typecho_Plugin_Interface {
 	
 	const PLUGIN_NAME  = 'QuickAuthLogin';
+	const PLUGIN_VERSION  = '0.9.2';
 	const PLUGIN_PATH  = __TYPECHO_ROOT_DIR__.__TYPECHO_PLUGIN_DIR__.'/QuickAuthLogin/';
 	
 	/**
@@ -27,6 +28,7 @@ class QuickAuthLogin_Plugin implements Typecho_Plugin_Interface {
         Helper::addPanel(1, 'QuickAuthLogin/views/authbind.php', '微信账号绑定', '微信账号绑定', 'subscriber');
 		Helper::addRoute('wechatlogin',__TYPECHO_ADMIN_DIR__.'QuickAuthLogin/wechatlogin','QuickAuthLogin_Action','wechatlogin');
 		Helper::addRoute('reset',__TYPECHO_ADMIN_DIR__.'QuickAuthLogin/reset','QuickAuthLogin_Action','reset');
+		Helper::addRoute('ping',__TYPECHO_ADMIN_DIR__.'QuickAuthLogin/ping','QuickAuthLogin_Action','ping');
 	}
 	
 	public static function updateDb()
