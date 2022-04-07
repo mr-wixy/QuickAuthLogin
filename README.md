@@ -4,6 +4,11 @@
 
 #### 更新记录
 
+##### 2022/03/31 v0.9.2
+
+1. 支持QuickAuth平台测试功能，可测试插件是否安装成功
+2. 更新接入教程
+
 ##### 2022/03/07 v0.9.1
 
 1. 取消替换登录界面功能，改为在源登录界面注入微信登录按钮
@@ -33,17 +38,11 @@ Github: [https://github.com/mr-wixy/QuickAuthLogin](https://github.com/mr-wixy/Q
 
 第 4 步：登录QuickAuth网站创建接入应用；
 
-![](https://cdn.wixy.cn/blog-picture/blog-picture20220127160420.png)
-
-<br/>
-
-第 5 步：填写应用的基本信息（注意：此时可以获取到AppKey，回调地址请填写自己博客的域名+/index.php/admin/QuickAuthLogin/wechatlogin 此处必须为https）
-
-![](https://cdn.wixy.cn/blog-picture/blog-picture20220127160707.png)
+![建接入应用](https://cdn.wixy.cn/blog-picture/20220407133031.png)
 
 第 6 步：发布应用；
 
-![发布应用](https://cdn.wixy.cn/blog-picture/blog-picture20220127161055.png)
+![发布应用](https://cdn.wixy.cn/blog-picture/20220407133237.png)
 
 第 7 步：[获取](https://qauth.cn/config/secret)UserSecretKey；
 
