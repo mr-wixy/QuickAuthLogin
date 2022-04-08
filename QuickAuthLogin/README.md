@@ -4,6 +4,10 @@
 
 #### 更新记录
 
+##### 2022/04/08 v0.9.3
+
+1. 适配Typecho1.2版本
+
 ##### 2022/03/31 v0.9.2
 
 1. 支持QuickAuth平台测试功能，可测试插件是否安装成功
@@ -40,15 +44,15 @@ Github: [https://github.com/mr-wixy/QuickAuthLogin](https://github.com/mr-wixy/Q
 
 ![建接入应用](https://cdn.wixy.cn/blog-picture/20220407133031.png)
 
-第 6 步：发布应用；
+第 5 步：发布应用；
 
 ![发布应用](https://cdn.wixy.cn/blog-picture/20220407133237.png)
 
-第 7 步：[获取](https://qauth.cn/config/secret)UserSecretKey；
+第 6 步：[获取](https://qauth.cn/config/secret)UserSecretKey；
 
 ![](https://cdn.wixy.cn/blog-picture/blog-picture20220127161157.png)
 
-第 8 步：进入博客插件后台配置AppKey和UserSecret；
+第 7 步：进入博客插件后台配置AppKey和UserSecret；
 
 ![](https://cdn.wixy.cn/blog-picture/20220307165220.png)
 

@@ -1,11 +1,20 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) {
-
+    
     exit;
 }
 
 class QuickAuthLogin_Action extends Typecho_Widget
 {
+    private function throwJson($data){
+        header('Content-Type:application/json; charset=utf-8');
+        exit(json_encode($data));
+    }
+    
+    private function redirect($location){
+        header("Location: $location");
+        exit();
+    }
     
     /* 测试插件安装接口 */
     public function ping(){ 
@@ -18,15 +27,13 @@ class QuickAuthLogin_Action extends Typecho_Widget
         	    "version" => QuickAuthLogin_Plugin::PLUGIN_VERSION
                 ]
         ];
-        $res = new Typecho_Response();
-        $res->throwJson($data);
+        $this->throwJson($data);
     }
 
     /* 重置当前用户绑定数据 */
     public function reset()
     {
         require_once __TYPECHO_ROOT_DIR__ . __TYPECHO_ADMIN_DIR__ . 'common.php';
-        $res = new Typecho_Response();
         $ret = [];
 
         if ($user->haslogin()) {
@@ -43,19 +50,17 @@ class QuickAuthLogin_Action extends Typecho_Widget
         } else {
             $ret['msg'] = 'what are you doing?';
         }
-        $res->throwJson($ret);
+        
+        $this->throwJson($ret);
     }
 
     /* 微信Callback跳转登录逻辑 */
     public function wechatlogin()
     {
         $options = QuickAuthLogin_Plugin::getoptions();
-        $res   = new Typecho_Response();
-        $req = new Typecho_Request();
         $ret   = [];
-        
-        $code = $req->get('code');
-        $state = $req->get('state');
+        $code = $_GET['code'];
+        $state = $_GET['state'];
         
         $api = $options->qauth_api."/user?code=".$code."&appkey=".$options->qauth_app_key."&secret=".$options->qauth_user_secret;
         $paras['header'] = 1;
@@ -78,12 +83,12 @@ class QuickAuthLogin_Action extends Typecho_Widget
                 $user = $db->fetchRow($db->select()->from('table.users')->where( 'qa_openid' . ' = ?', $openId[1])->limit(1));
                 if($user){
                     $this->widget('Widget_Notice')->set('此微信账号已被绑定！', 'error');
-                    $res->redirect("/admin/extending.php?panel=QuickAuthLogin/views/authbind.php");
+                    $this->redirect("/admin/extending.php?panel=QuickAuthLogin/views/authbind.php");
                 }
                 //更新基础信息
                 $db->query($db->update('table.users')->rows(['qa_openid' => $openId[1], 'qa_nickname' => $nickName[1], 'qa_avatar' => $avatarUrl[1]])->where('name = ?', $name));
                 $this->widget('Widget_Notice')->set(_t('用户 <strong>%s</strong> 成功绑定微信账号 <strong>%s</strong>', $name, $nickName[1]), 'success');
-                $res->redirect("/admin/extending.php?panel=QuickAuthLogin/views/authbind.php");
+                $this->redirect("/admin/extending.php?panel=QuickAuthLogin/views/authbind.php");
             }
             else{
                 $ret['login']['msg']  = 'Fail';
@@ -92,11 +97,11 @@ class QuickAuthLogin_Action extends Typecho_Widget
                 $user = $db->fetchRow($db->select()->from('table.users')->where( 'qa_openid' . ' = ?', $openId[1])->limit(1));
                 
                 if($user){
-                    $authCode = function_exists('openssl_random_pseudo_bytes') ? bin2hex(openssl_random_pseudo_bytes(16)) : sha1(Typecho_Common::randString(20));
+                    $authCode = function_exists('openssl_random_pseudo_bytes') ? bin2hex(openssl_random_pseudo_bytes(16)) : sha1(Common::randString(20));
                     $user['authCode'] = $authCode;
         
-                    Typecho_Cookie::set('__typecho_uid', $user['uid'], $expire);
-                    Typecho_Cookie::set('__typecho_authCode', Typecho_Common::hash($authCode), $expire);
+                    Typecho_Cookie::set('__typecho_uid', $user['uid']);
+                    Typecho_Cookie::set('__typecho_authCode', Typecho_Common::hash($authCode));
         
                     $db->query($db->update('table.users')->expression('logged',
                         'activated')->rows(['authCode' => $authCode])->where('uid = ?', $user['uid']));
@@ -107,7 +112,7 @@ class QuickAuthLogin_Action extends Typecho_Widget
                     $this->_hasLogin = true;
 
                     echo 'success';
-                    $res->redirect(Helper::options()->adminUrl);
+                    $this->redirect(Helper::options()->adminUrl);
                 }
                 else{//该微信账号未绑定
                     if($options->allow_register){//匿名账号注册登录
@@ -137,8 +142,8 @@ class QuickAuthLogin_Action extends Typecho_Widget
                         
                         $authCode = function_exists('openssl_random_pseudo_bytes') ? bin2hex(openssl_random_pseudo_bytes(16)) : sha1(Typecho_Common::randString(20));
                         $user['authCode'] = $authCode;
-                        Typecho_Cookie::set('__typecho_uid', $user['uid'], $expire);
-                        Typecho_Cookie::set('__typecho_authCode', Typecho_Common::hash($authCode), $expire);
+                        Typecho_Cookie::set('__typecho_uid', $user['uid']);
+                        Typecho_Cookie::set('__typecho_authCode', Typecho_Common::hash($authCode));
             
                         $db->query($db->update('table.users')->expression('logged',
                             'activated')->rows(['authCode' => $authCode])->where('uid = ?', $user['uid']));
@@ -148,21 +153,21 @@ class QuickAuthLogin_Action extends Typecho_Widget
                         $this->_hasLogin = true;
     
                         $this->widget('Widget_Notice')->set(_t('用户 <strong>%s</strong> 已经成功注册, 密码为 <strong>%s</strong>', $newUserName, $generatedPassword), 'success');
-                        $res->redirect(Helper::options()->adminUrl);
+                        $this->redirect(Helper::options()->adminUrl);
                         
                        
                     }
                     else{
                         $this->widget('Widget_Notice')->set('该微信未绑定用户，无法登陆！', 'error');
-                        $res->redirect(Helper::options()->loginUrl);
+                        $this->redirect(Helper::options()->loginUrl);
                     }
                 }
             }
-            $res->throwJson($ret);
+            $this->throwJson($ret);
         }
         else{
             $ret['msg'] = $msg[1];
-            $res->throwJson($ret);
+            $this->throwJson($ret);
         }
     }
 

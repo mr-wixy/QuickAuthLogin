@@ -4,14 +4,14 @@
  * 
  * @package QuickAuthLogin 
  * @author wixy
- * @version 0.9.2
+ * @version 0.9.3
  * @link https://blog.wixy.cn
  */
 
 class QuickAuthLogin_Plugin implements Typecho_Plugin_Interface {
 	
 	const PLUGIN_NAME  = 'QuickAuthLogin';
-	const PLUGIN_VERSION  = '0.9.2';
+	const PLUGIN_VERSION  = '0.9.3';
 	const PLUGIN_PATH  = __TYPECHO_ROOT_DIR__.__TYPECHO_PLUGIN_DIR__.'/QuickAuthLogin/';
 	
 	/**
